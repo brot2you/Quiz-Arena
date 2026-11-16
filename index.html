@@ -407,6 +407,7 @@ input[type=range]{width:100%;accent-color:#fff;height:34px}
 .tbadge.xxl{width:120px;height:120px;border-radius:36px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
 .t-single{background:var(--a)}.t-multi{background:var(--b)}.t-tf{background:var(--c)}.t-type{background:var(--d)}.t-puzzle{background:var(--violet)}.t-slider{background:var(--orange)}.t-poll{background:var(--cyan)}
 .t-tf .i{color:#5a4100}
+.t-cloud{background:#4fa3ff}.t-open{background:var(--pink)}.t-pin{background:#e23d7a}.t-slide{background:#5d6270}
 .qtypes{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
 .type-btn .tbadge{width:34px;height:34px;border-radius:11px}
 .type-btn.on .tbadge{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--red)}
@@ -472,6 +473,45 @@ img.reveal-full{max-height:26vh;max-width:min(560px,90%);border-radius:22px;box-
 .rv-opt{flex:1 1 100%;min-width:0}
 .rv-opt>span:first-child{min-width:0;white-space:normal}
 
+/* ---------- Épingle sur image (éditeur) ---------- */
+.pin-edit{position:relative;display:inline-block;justify-self:center;cursor:crosshair;border-radius:18px;overflow:hidden;line-height:0;box-shadow:var(--sh);user-select:none;-webkit-user-select:none}
+.pin-edit img{display:block;max-width:100%;max-height:52vh}
+.pin-zone{position:absolute;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);background:rgba(34,189,118,.35);border:3px dashed #fff;box-shadow:0 0 0 2px rgba(0,0,0,.25);pointer-events:none}
+.pin-dot{position:absolute;transform:translate(-50%,-100%);color:var(--red);pointer-events:none;line-height:0}
+.pin-dot .i{width:34px;height:34px;fill:#fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+
+/* ---------- Diapo d'information ---------- */
+.slide-card{background:#fff;color:var(--ink);border-radius:32px;box-shadow:var(--sh-l);padding:28px 36px;width:min(1100px,100%);display:grid;gap:18px;justify-items:center;text-align:center}
+.slide-head{display:flex;gap:10px;align-items:center;color:var(--muted);font-weight:900;letter-spacing:1px}
+.slide-card h2{font-size:clamp(28px,3.6vw,52px);line-height:1.1}
+.slide-card img{max-width:100%;max-height:42vh;border-radius:20px}
+.slide-body{font-size:clamp(18px,2vw,28px);font-weight:700;line-height:1.4;color:var(--ink2);max-width:900px;text-align:left}
+.slide-ph{text-align:left;font-weight:700;line-height:1.4}
+
+/* ---------- Nuage de mots ---------- */
+.wcloud{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;width:min(1100px,100%);min-height:30vh;padding:20px;background:rgba(255,255,255,.06);border-radius:28px}
+.wcloud span{font-family:var(--display);font-weight:900;line-height:1.1;animation:pop-in .45s cubic-bezier(.3,1.5,.6,1) both}
+.wcloud sup{font-size:.4em;opacity:.7;margin-left:2px}
+.wcloud .w0{color:#fff}.wcloud .w1{color:var(--yellow)}.wcloud .w2{color:#7fb8ff}.wcloud .w3{color:#ff8fa3}.wcloud .w4{color:#6fe3b0}.wcloud .w5{color:#c7b5ff}
+.wcloud span:nth-child(2){animation-delay:.05s}.wcloud span:nth-child(3){animation-delay:.1s}.wcloud span:nth-child(4){animation-delay:.15s}.wcloud span:nth-child(n+5){animation-delay:.2s}
+.rev-count{margin:0;font-weight:800;opacity:.85}
+
+/* ---------- Question ouverte ---------- */
+.open-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;width:min(1180px,100%);max-height:52vh;overflow:auto;padding:4px}
+.open-card{background:#fff;color:var(--ink);border-radius:18px;padding:14px 16px;font-weight:800;font-size:clamp(15px,1.4vw,20px);text-align:left;line-height:1.3;box-shadow:0 4px 0 rgba(0,0,0,.15);border-top:6px solid var(--a);animation:pop-in .35s both;word-break:break-word}
+.open-card.o1{border-top-color:var(--b)}.open-card.o2{border-top-color:var(--c)}.open-card.o3{border-top-color:var(--d)}
+.open-card.hidden-ans{opacity:.15;filter:blur(3px)}
+
+/* ---------- Épingle : correction et téléphone ---------- */
+.pin-reveal{position:relative;display:inline-block;line-height:0;border-radius:24px;overflow:hidden;box-shadow:var(--sh-l);background:#fff}
+.pin-reveal img{display:block;max-width:min(900px,90vw);max-height:46vh}
+.pin-mark{position:absolute;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4);animation:pop-in .4s both}
+.pin-mark.ok{background:var(--green)}.pin-mark.ko{background:var(--a)}
+.pin-pad{position:relative;display:inline-block;line-height:0;border-radius:18px;overflow:hidden;cursor:crosshair;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.pin-pad img{display:block;max-width:100%;max-height:46vh}
+.field input[type=range]{accent-color:var(--red);border:0;padding:0;background:transparent;height:30px}
+.pin-mark{width:24px;height:24px;border-width:4px}
+
 </style>
 </head>
 <body>
@@ -484,7 +524,7 @@ img.reveal-full{max-height:26vh;max-width:min(560px,90%);border-radius:22px;box-
     <button data-nav="join"><span class="ico" data-ic="gamepad"></span>Rejoindre</button>
     <button data-nav="reports"><span class="ico" data-ic="chart"></span>Rapports</button>
   </nav>
-  <div class="side-foot"><span id="modeSide">…</span><span>V3.3 • by BROT2YOU</span></div>
+  <div class="side-foot"><span id="modeSide">…</span><span>V3.4 • by BROT2YOU</span></div>
 </aside>
 <div class="app">
   <header class="topbar">
@@ -519,7 +559,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 (function(){
 'use strict';
 /* ===================== 01 · OUTILS ===================== */
-var VERSION = '3.3';
+var VERSION = '3.4';
 function $(id) { return document.getElementById(id); }
 function esc(s) {
   return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -601,9 +641,16 @@ var TYPES = {
   type: { label: 'Réponse libre', icon: '⌨', desc: 'Les élèves tapent la réponse' },
   puzzle: { label: 'Puzzle', icon: '🧩', desc: 'Remettre dans l\'ordre' },
   slider: { label: 'Curseur', icon: '🎚', desc: 'Trouver une valeur' },
-  poll: { label: 'Sondage', icon: '📊', desc: 'Sans bonne réponse, sans points' }
+  poll: { label: 'Sondage', icon: '📊', desc: 'Sans bonne réponse, sans points' },
+  cloud: { label: 'Nuage de mots', icon: '☁', desc: 'Chacun tape un mot, sans points' },
+  open: { label: 'Question ouverte', icon: '💬', desc: 'Chacun écrit une phrase, sans points' },
+  pin: { label: 'Épingle', icon: '📍', desc: 'Toucher le bon endroit sur l\'image' },
+  slide: { label: 'Diapo', icon: '🖼', desc: 'Écran d\'information, sans réponse' }
 };
-var TYPE_ORDER = ['single', 'multi', 'tf', 'type', 'puzzle', 'slider', 'poll'];
+var TYPE_ORDER = ['single', 'multi', 'tf', 'type', 'puzzle', 'slider', 'pin', 'poll', 'cloud', 'open', 'slide'];
+/* types sans bonne réponse ni points */
+var NOSCORE = { poll: 1, cloud: 1, open: 1, slide: 1 };
+var OPEN_MAX = 80, CLOUD_MAX = 25;
 var TIMES = [5, 10, 20, 30, 45, 60, 90, 120, 240];
 var AVATARS = ['🦊', '🐼', '🐸', '🦄', '🐙', '🐯', '🐨', '🦖', '🐧', '🦁', '🐵', '🐰', '🐝', '🦉', '🐳', '👾'];
 var ADJ = ['Brave', 'Jolly', 'Swift', 'Mighty', 'Clever', 'Happy', 'Sunny', 'Lucky', 'Cosmic', 'Fluffy', 'Witty', 'Bouncy', 'Shiny', 'Groovy', 'Speedy', 'Funky', 'Sneaky', 'Epic', 'Chill', 'Zesty', 'Royal', 'Turbo', 'Super', 'Wild'];
@@ -634,6 +681,10 @@ var ICONS = {
   users: '<circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="16.8" cy="9.4" r="2.6"/><path d="M16.2 14.3c2.5 0 4.3 1.6 4.8 4.4"/>',
   user: '<circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c.7-3.9 3.5-6 7-6s6.3 2.1 7 6"/>',
   gamepad: '<path d="M7.2 6.5h9.6a5 5 0 0 1 4.9 6.1l-.9 4a2.4 2.4 0 0 1-4.1 1.1L14.3 15H9.7l-2.4 2.7a2.4 2.4 0 0 1-4.1-1.1l-.9-4a5 5 0 0 1 4.9-6.1z"/><path d="M7.6 9.6v3.6M5.8 11.4h3.6"/><path d="M15.6 10.4h.01M17.6 12.4h.01" stroke-width="3"/>',
+  cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.9 8.6 4.2 4.2 0 0 1 17.5 18.5z"/><path d="M9 14.5h2.5M13 14.5h3M10.5 11.8h4"/>',
+  chat: '<path d="M4.5 6.5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H11l-4.2 3.5V16.5H6.5a2 2 0 0 1-2-2z"/><path d="M8.5 9h7M8.5 12h4.5"/>',
+  pin: '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/>',
+  slide: '<rect x="3" y="4" width="18" height="13" rx="2.2"/><path d="M7 8.5h10M7 11.5h6.5M12 17v3M8.5 20.5h7"/>',
   qr: '<rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.5"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.5"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.5"/><path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 20.5h1M20.5 14v1"/>',
   sound: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
   mute: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="m16 9.5 5 5M21 9.5l-5 5"/>',
@@ -673,7 +724,7 @@ function ic(name, cls) {
   return '<svg class="i' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || '') + '</svg>';
 }
 /* badge rond coloré (types de question, écrans de résultat) */
-var TYPE_IC = { single: 'target', multi: 'multi', tf: 'tf', type: 'keyboard', puzzle: 'puzzle', slider: 'slider', poll: 'poll' };
+var TYPE_IC = { single: 'target', multi: 'multi', tf: 'tf', type: 'keyboard', puzzle: 'puzzle', slider: 'slider', poll: 'poll', cloud: 'cloud', open: 'chat', pin: 'pin', slide: 'slide' };
 function tic(t, cls) { return '<span class="tbadge t-' + t + (cls ? ' ' + cls : '') + '">' + ic(TYPE_IC[t] || 'target') + '</span>'; }
 function badge(name, color, cls) { return '<span class="bigbadge ' + (color || '') + (cls ? ' ' + cls : '') + '">' + ic(name) + '</span>'; }
 
@@ -790,10 +841,12 @@ function defaultQuestion(type) {
   var q = {
     id: rid(8), type: type || 'single', text: '', image: '', seconds: 20, pts: 'standard',
     choices: ['', '', '', ''], correct: [0], accepted: ['', '', '', ''], items: ['', '', '', ''],
-    slider: { min: 0, max: 100, step: 1, target: 50, tol: 5, unit: '' }
+    slider: { min: 0, max: 100, step: 1, target: 50, tol: 5, unit: '' },
+    body: '', pin: { x: 50, y: 50, r: 10 }, aspect: 1.5
   };
   if (q.type === 'tf') { q.choices = ['Vrai', 'Faux', '', '']; }
-  if (q.type === 'poll') { q.correct = []; }
+  if (NOSCORE[q.type]) { q.correct = []; }
+  if (q.type === 'slide') q.seconds = 20;
   return q;
 }
 
@@ -822,7 +875,10 @@ function migrateQuiz(src) {
     q.choices = ch.slice(0, 4);
     if (type === 'tf') { q.choices = ['Vrai', 'Faux', '', '']; }
     q.correct = arr(x.correct).map(Number).filter(function (n, i, a) { return n >= 0 && n < 4 && a.indexOf(n) === i; });
-    if (type === 'poll') q.correct = [];
+    if (NOSCORE[type]) q.correct = [];
+    q.body = String(x.body || '').slice(0, 500);
+    if (x.pin && typeof x.pin === 'object') q.pin = { x: clamp(Number(x.pin.x) || 0, 0, 100), y: clamp(Number(x.pin.y) || 0, 0, 100), r: clamp(Number(x.pin.r) || 10, 2, 40) };
+    q.aspect = clamp(Number(x.aspect) || 1.5, 0.2, 5);
     var acc = arr(x.accepted).map(function (c) { return String(c || '').slice(0, 60); });
     while (acc.length < 4) acc.push('');
     q.accepted = acc.slice(0, 4);
@@ -849,7 +905,8 @@ function filledChoices(q) {
 
 /* Renvoie un message d'erreur pour une question, ou null */
 function questionError(q) {
-  if (!String(q.text || '').trim()) return 'Écris l\'énoncé de la question.';
+  if (!String(q.text || '').trim()) return q.type === 'slide' ? 'Donne un titre à la diapo.' : 'Écris l\'énoncé de la question.';
+  if (q.type === 'pin' && !q.image) return 'Ajoute une image : les élèves toucheront le bon endroit dessus.';
   if (q.image && !/^https:\/\//i.test(q.image) && !/^data:image\//i.test(q.image)) return 'L\'image doit être une adresse https:// ou un fichier importé.';
   if (q.type === 'single' || q.type === 'multi' || q.type === 'poll') {
     var f = filledChoices(q);
@@ -902,9 +959,17 @@ function buildPlayQuiz(quiz, opts) {
       p.tok = p.items.map(function () { return rid(6); });   /* jetons aléatoires : l'ordre correct n'est pas déductible côté élève */
     }
     if (q.type === 'slider') p.slider = clone(q.slider);
+    if (q.type === 'pin') { p.pin = clone(q.pin); p.aspect = q.aspect; p.reveal = false; }
+    if (q.type === 'slide') { p.body = String(q.body || '').trim(); p.pts = 'none'; }
+    if (NOSCORE[q.type]) p.pts = 'none';
     return p;
   });
-  if (opts.shuffleQ) qs = shuffle(qs);
+  if (opts.shuffleQ) {   /* les diapos restent à leur place */
+    var slots = [], movable = [];
+    qs.forEach(function (q, i) { if (q.type !== 'slide') { slots.push(i); movable.push(q); } });
+    movable = shuffle(movable);
+    slots.forEach(function (i, k) { qs[i] = movable[k]; });
+  }
   return { title: quiz.title, quizId: quiz.id, questions: qs };
 }
 
@@ -914,6 +979,8 @@ function publicQuestion(q) {
   if (q.choices) p.choices = q.choices;
   if (q.type === 'puzzle') p.items = q.display.map(function (k) { return { k: q.tok[k], t: q.items[k] }; });
   if (q.type === 'slider') p.slider = { min: q.slider.min, max: q.slider.max, step: q.slider.step, unit: q.slider.unit };
+  if (q.type === 'pin') { p.aspect = q.aspect; p.reveal = false; }   /* la cible reste secrète */
+  if (q.type === 'slide') p.body = q.body || '';
   return p;
 }
 
@@ -1499,9 +1566,9 @@ function reportStats(rep) {
   var pids = keys(rep.players), qs = rep.questions || [], perQ = [], tot = 0, okTot = 0;
   qs.forEach(function (q, i) {
     var res = (rep.results || [])[i] || {}, ok = 0, n = 0, time = 0, tn = 0;
-    pids.forEach(function (u) { var r = res[u]; if (q.type === 'poll') return; n++; if (r && r.st === 'ok') ok++; if (r && r.t >= 0 && r.st !== 'none') { time += r.t; tn++; } });
+    pids.forEach(function (u) { var r = res[u]; if (NOSCORE[q.type]) return; n++; if (r && r.st === 'ok') ok++; if (r && r.t >= 0 && r.st !== 'none') { time += r.t; tn++; } });
     perQ.push({ q: q, pct: n ? Math.round(ok * 100 / n) : null, ok: ok, n: n, avg: tn ? Math.round(time / tn / 100) / 10 : null });
-    if (q.type !== 'poll') { tot += n; okTot += ok; }
+    if (!NOSCORE[q.type]) { tot += n; okTot += ok; }
   });
   return { perQ: perQ, pct: tot ? Math.round(okTot * 100 / tot) : null, players: pids.length };
 }
@@ -1528,15 +1595,23 @@ function reportDetail(rep) {
   h += '<div class="panel"><h2>Questions</h2><div class="scroll-x"><table class="table"><tr><th>#</th><th>Question</th><th>Type</th><th>Réussite</th><th>Temps moyen</th></tr>';
   s.perQ.forEach(function (x, i) {
     h += '<tr><td>' + (i + 1) + '</td><td>' + esc(x.q.text) + '</td><td>' + tic(x.q.type, 'sm') + ' ' + TYPES[x.q.type].label + '</td><td>' +
-      (x.pct === null ? 'sondage' : '<div class="bar"><i style="width:' + x.pct + '%;background:' + pctColor(x.pct) + '"></i></div>' + x.pct + ' % (' + x.ok + '/' + x.n + ')') + '</td><td>' + (x.avg === null ? '—' : x.avg + ' s') + '</td></tr>';
+      (x.pct === null ? (x.q.type === 'slide' ? 'diapo' : 'sans points') : '<div class="bar"><i style="width:' + x.pct + '%;background:' + pctColor(x.pct) + '"></i></div>' + x.pct + ' % (' + x.ok + '/' + x.n + ')') + '</td><td>' + (x.avg === null ? '—' : x.avg + ' s') + '</td></tr>';
   });
   h += '</table></div></div><div class="panel"><h2>' + (rep.team ? 'Équipes' : 'Élèves') + '</h2><div class="scroll-x"><table class="table"><tr><th>Rang</th><th>Pseudo</th><th>Score</th><th>Bonnes réponses</th><th>Sans réponse</th></tr>';
   pids.forEach(function (u, i) {
     var p = rep.players[u], ok = 0, n = 0, none = 0;
-    (rep.questions || []).forEach(function (q, qi) { if (q.type === 'poll') return; n++; var r = ((rep.results || [])[qi] || {})[u]; if (r && r.st === 'ok') ok++; if (!r || r.st === 'none') none++; });
+    (rep.questions || []).forEach(function (q, qi) { if (NOSCORE[q.type]) return; n++; var r = ((rep.results || [])[qi] || {})[u]; if (r && r.st === 'ok') ok++; if (!r || r.st === 'none') none++; });
     h += '<tr><td>' + (i + 1) + '</td><td><span class="who-cell">' + avatarHtml(p.av, 'xs') + esc(p.name) + '</span>' + (p.members ? '<br><small>' + esc(p.members) + '</small>' : '') + '</td><td><b>' + (p.score || 0) + '</b></td><td>' + ok + '/' + n + '</td><td>' + none + '</td></tr>';
   });
-  return h + '</table></div></div>';
+  h += '</table></div></div>';
+  /* réponses écrites (questions ouvertes et nuages de mots) */
+  (rep.questions || []).forEach(function (q, qi) {
+    if (q.type !== 'open' && q.type !== 'cloud') return;
+    var res = (rep.results || [])[qi] || {}, rows = '';
+    pids.forEach(function (u) { var r = res[u]; if (r && r.a) rows += '<tr><td>' + esc(rep.players[u].name) + '</td><td>' + esc(r.a) + '</td></tr>'; });
+    h += '<div class="panel"><h2>' + tic(q.type, 'sm') + ' ' + esc(q.text) + '</h2>' + (rows ? '<div class="scroll-x"><table class="table"><tr><th>Pseudo</th><th>Réponse</th></tr>' + rows + '</table></div>' : '<p class="hint">Aucune réponse.</p>') + '</div>';
+  });
+  return h;
 }
 function reportCsv(rep) {
   var qs = rep.questions || [], pids = keys(rep.players);
@@ -1549,7 +1624,7 @@ function reportCsv(rep) {
     qs.forEach(function (q, qi) {
       var r = ((rep.results || [])[qi] || {})[u] || { st: 'none' };
       if (r.st === 'ok') ok++;
-      row.push(r.a || '', { ok: 'juste', part: 'partiel', ko: 'faux', none: 'sans réponse', poll: 'vote' }[r.st] || '', r.g || 0, r.t >= 0 && r.st !== 'none' ? (r.t / 1000).toFixed(1) : '');
+      row.push(r.a || '', { ok: 'juste', part: 'partiel', ko: 'faux', none: 'sans réponse', poll: 'réponse' }[r.st] || '', r.g || 0, r.t >= 0 && r.st !== 'none' ? (r.t / 1000).toFixed(1) : '');
     });
     row[4] = ok; lines.push(csvLine(row));
   });
@@ -1607,12 +1682,13 @@ function slidesHtml() {
 function qeditHtml() {
   var q = cur(), i = EDSEL, h = '', j, err = questionError(q);
   h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="sticker blue">Question ' + (i + 1) + ' / ' + ED.questions.length + '</span><span class="chip">' + tic(q.type, 'xs') + ' ' + TYPES[q.type].desc + '</span></div>';
-  h += '<textarea class="qtext" maxlength="240" rows="2" placeholder="Écris ta question ici…" data-ed="text">' + esc(q.text) + '</textarea>';
+  h += '<textarea class="qtext" maxlength="240" rows="2" placeholder="' + (q.type === 'slide' ? 'Titre de la diapo…' : 'Écris ta question ici…') + '" data-ed="text">' + esc(q.text) + '</textarea>';
+  if (q.type === 'slide') h += '<label class="field">Texte de la diapo (consigne, document, rappel…)<textarea class="inp" rows="5" maxlength="500" data-ed="body" placeholder="Ex. Read the text on page 42, then answer the next questions.">' + esc(q.body) + '</textarea></label>';
   h += '<div class="media">' + (q.image ? '<img src="' + esc(q.image) + '" alt="Image de la question">' : '<span class="media-ph">' + ic('image') + '</span>') +
     '<input class="inp" type="url" placeholder="Adresse d\'une image (https://…)" value="' + (/^data:/.test(q.image) ? '' : esc(q.image)) + '" data-ed="image">' +
     '<label class="btn sm yellow">' + ic('upload') + ' Importer une image<input type="file" accept="image/*" data-change="ed-image" hidden></label>' +
     (q.image ? '<button class="btn sm" data-action="ed-noimg">' + ic('close') + ' Retirer</button>' : '') +
-    (q.image ? '<label class="opt rv-opt"><span>' + ic('image') + ' Dévoiler l\'image peu à peu<small>Cachée par des tuiles qui disparaissent pendant le chrono : qui devine tôt gagne plus.</small></span><span class="switch"><input type="checkbox" data-ed="reveal"' + (q.reveal ? ' checked' : '') + '><span></span></span></label>' : '') + '</div>';
+    (q.image && q.type !== 'pin' && q.type !== 'slide' ? '<label class="opt rv-opt"><span>' + ic('image') + ' Dévoiler l\'image peu à peu<small>Cachée par des tuiles qui disparaissent pendant le chrono : qui devine tôt gagne plus.</small></span><span class="switch"><input type="checkbox" data-ed="reveal"' + (q.reveal ? ' checked' : '') + '><span></span></span></label>' : '') + '</div>';
   if (q.type === 'single' || q.type === 'multi' || q.type === 'poll' || q.type === 'tf') {
     var n = q.type === 'tf' ? 2 : 4;
     h += '<div class="tiles-edit">';
@@ -1624,6 +1700,17 @@ function qeditHtml() {
     }
     h += '</div><p class="hint">' + ({ single: 'Clique sur ✓ pour la bonne réponse. Les réponses 3 et 4 sont facultatives.', multi: 'Coche toutes les bonnes réponses : une erreur annule les points, une sélection incomplète en donne une partie.', poll: 'Pas de bonne réponse, pas de points : idéal pour lancer un débat ou vérifier le ressenti.', tf: 'Indique si l\'affirmation est vraie ou fausse.' })[q.type] + '</p>';
   }
+  if (q.type === 'pin') {
+    if (q.image) {
+      var pn = q.pin;
+      h += '<div class="pin-edit" data-action="ed-pin" title="Clique pour placer la zone juste"><img src="' + esc(q.image) + '" alt="" draggable="false"><span class="pin-zone" style="left:' + pn.x + '%;top:' + pn.y + '%;width:' + (pn.r * 2) + '%"></span><span class="pin-dot" style="left:' + pn.x + '%;top:' + pn.y + '%">' + ic('pin') + '</span></div>' +
+        '<label class="field">Taille de la zone juste<input type="range" min="3" max="30" step="1" value="' + pn.r + '" data-ed="pinr"></label>' +
+        '<p class="hint">Clique sur l\'image pour placer le centre de la zone juste. Dans la zone = points (plus on est près du centre, plus on gagne) ; dehors = faux.</p>';
+    } else h += '<p class="hint">Ajoute une image ci-dessus (carte, schéma, scène…), puis clique dessus pour placer la zone juste.</p>';
+  }
+  if (q.type === 'cloud') h += '<p class="hint">Chaque élève tape un mot ou une courte expression (' + CLOUD_MAX + ' caractères max). Au tableau, les mots les plus fréquents s\'affichent en plus gros. Pas de points.</p>';
+  if (q.type === 'open') h += '<p class="hint">Chaque élève écrit une phrase (' + OPEN_MAX + ' caractères max). Les réponses s\'affichent au tableau sans les pseudos ; clique sur une réponse pour la masquer. Elles sont toutes dans le rapport. Pas de points.</p>';
+  if (q.type === 'slide') h += '<p class="hint">Pas de réponse ni de chrono : la diapo reste affichée jusqu\'à ce que tu cliques sur « Suivant ».</p>';
   if (q.type === 'type') {
     h += '<div class="grid2">';
     for (j = 0; j < 4; j++) h += '<label class="field">Réponse acceptée ' + (j + 1) + '<input maxlength="60" value="' + esc(q.accepted[j]) + '" data-acc="' + j + '" placeholder="' + (j ? 'Variante (facultative)' : 'Ex. went') + '"></label>';
@@ -1651,11 +1738,14 @@ function qeditHtml() {
 function sideHtml() {
   var q = cur(), h = '<div class="field">Type de question<div class="type-grid">';
   TYPE_ORDER.forEach(function (t) { h += '<button class="type-btn' + (q.type === t ? ' on' : '') + '" data-action="ed-type" data-t="' + t + '">' + tic(t) + '' + TYPES[t].label + '</button>'; });
-  h += '</div></div><label class="field"><span>' + ic('clock') + ' Temps</span><select data-ed="seconds">';
-  TIMES.forEach(function (t) { h += '<option value="' + t + '"' + (q.seconds === t ? ' selected' : '') + '>' + (t < 60 ? t + ' secondes' : (t / 60) + ' min') + '</option>'; });
-  if (TIMES.indexOf(q.seconds) === -1) h += '<option value="' + q.seconds + '" selected>' + q.seconds + ' s</option>';
-  h += '</select></label>';
-  if (q.type !== 'poll') {
+  h += '</div></div>';
+  if (q.type !== 'slide') {
+    h += '<label class="field"><span>' + ic('clock') + ' Temps</span><select data-ed="seconds">';
+    TIMES.forEach(function (t) { h += '<option value="' + t + '"' + (q.seconds === t ? ' selected' : '') + '>' + (t < 60 ? t + ' secondes' : (t / 60) + ' min') + '</option>'; });
+    if (TIMES.indexOf(q.seconds) === -1) h += '<option value="' + q.seconds + '" selected>' + q.seconds + ' s</option>';
+    h += '</select></label>';
+  }
+  if (!NOSCORE[q.type]) {
     h += '<div class="field"><span>' + ic('medal') + ' Points</span><div class="seg">' + [['standard', 'Standard'], ['double', 'Double'], ['none', 'Aucun']].map(function (p) {
       return '<button class="' + (q.pts === p[0] ? 'on' : '') + '" data-action="ed-pts" data-p="' + p[0] + '">' + p[1] + '</button>';
     }).join('') + '</div></div>';
@@ -1681,6 +1771,8 @@ function edInput(el) {
   else if (f === 'image') { q.image = el.value.trim(); }
   else if (f === 'seconds') q.seconds = Number(el.value) || 20;
   else if (f === 'reveal') q.reveal = !!el.checked;
+  else if (f === 'body') q.body = el.value;
+  else if (f === 'pinr') { q.pin.r = Number(el.value) || 10; var z = document.querySelector('.pin-zone'); if (z) z.style.width = (q.pin.r * 2) + '%'; }
   else if (el.hasAttribute('data-ch')) q.choices[Number(el.getAttribute('data-ch'))] = el.value;
   else if (el.hasAttribute('data-acc')) q.accepted[Number(el.getAttribute('data-acc'))] = el.value;
   else if (el.hasAttribute('data-it')) q.items[Number(el.getAttribute('data-it'))] = el.value;
@@ -1715,10 +1807,23 @@ ACT['ed-type'] = function (el) {
   else if (old === 'tf') { q.choices = ['', '', '', '']; q.correct = [0]; }
   if (t === 'single') q.correct = q.correct.length ? [q.correct[0]] : [0];
   if (t === 'multi' && !q.correct.length) q.correct = [0];
-  if (t === 'poll') q.correct = [];
-  if (old === 'poll' && t !== 'poll' && !q.correct.length) q.correct = [0];
-  if (t === 'poll') q.pts = 'standard';
+  if (NOSCORE[t]) q.correct = [];
+  if (NOSCORE[old] && !NOSCORE[t] && !q.correct.length) q.correct = [0];
+  if (NOSCORE[t]) q.pts = 'standard';
+  if (t === 'pin' || t === 'slide') q.reveal = false;
   edRedraw();
+};
+ACT['ed-pin'] = function (el, ev) {
+  var img = el.querySelector('img'); if (!img) return;
+  var r = img.getBoundingClientRect(), q = cur();
+  if (!r.width || !r.height) return;
+  q.pin.x = Math.round(clamp((ev.clientX - r.left) / r.width * 100, 0, 100) * 10) / 10;
+  q.pin.y = Math.round(clamp((ev.clientY - r.top) / r.height * 100, 0, 100) * 10) / 10;
+  if (img.naturalWidth && img.naturalHeight) q.aspect = img.naturalWidth / img.naturalHeight;
+  var z = el.querySelector('.pin-zone'), d = el.querySelector('.pin-dot');
+  if (z) { z.style.left = q.pin.x + '%'; z.style.top = q.pin.y + '%'; }
+  if (d) { d.style.left = q.pin.x + '%'; d.style.top = q.pin.y + '%'; }
+  saveDraft();
 };
 ACT['ed-pts'] = function (el) { cur().pts = el.getAttribute('data-p'); edRedraw(); };
 ACT['ed-correct'] = function (el) {
@@ -1740,7 +1845,7 @@ function edImage(input) {
       var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
       var qual = 0.78, data = c.toDataURL('image/jpeg', qual);
       while (data.length > 160000 && qual > 0.35) { qual -= 0.1; data = c.toDataURL('image/jpeg', qual); }
-      cur().image = data; edRedraw();
+      cur().image = data; cur().aspect = c.width / c.height; edRedraw();
     };
     img.onerror = function () { notice('Image illisible.', 'err'); };
     img.src = r.result;
@@ -1927,6 +2032,12 @@ function hostHtml() {
       '<p style="margin:0;opacity:.85;font-weight:700">Clique sur un pseudo pour exclure le joueur.</p></div>';
   }
   q = curQ();
+  if (r.status === 'slide') {
+    return hostBar('<button class="btn sm green" data-action="h-next">Suivant ' + ic('next') + '</button>') + '<div class="stage-body"><div class="slide-card">' +
+      '<div class="slide-head">' + tic('slide', 'sm') + '<span>' + (r.index + 1) + ' / ' + r.total + '</span></div><h2>' + esc(q.text) + '</h2>' +
+      (q.image ? '<img src="' + esc(q.image) + '" alt="">' : '') + (q.body ? '<div class="slide-body">' + esc(q.body).replace(/\n/g, '<br>') + '</div>' : '') +
+      '</div><button class="btn yellow big" data-action="h-next">Suivant ' + ic('next') + '</button></div>';
+  }
   if (r.status === 'intro') {
     return hostBar('<button class="btn sm yellow" data-action="h-skip">Passer ' + ic('next') + '</button>') + '<div class="stage-body"><div class="intro-wrap">' +
       '<div class="intro-num">Question ' + (r.index + 1) + ' sur ' + r.total + '</div>' + tic(q.type, 'xl') + '<span class="sticker intro-type">' + TYPES[q.type].label + (q.pts === 'double' ? ' • ×2 points' : q.pts === 'none' ? ' • sans points' : '') + '</span>' +
@@ -1939,6 +2050,9 @@ function hostHtml() {
     if (q.choices) h += tilesHtml(q, null);
     else if (q.type === 'type') h += '<div class="reveal-answer" style="background:var(--blue);color:#fff">' + ic('keyboard') + ' Tape ta réponse sur ton appareil</div>';
     else if (q.type === 'slider') h += '<div class="reveal-answer" style="background:var(--violet);color:#fff">' + ic('slider') + ' Choisis une valeur entre ' + q.slider.min + ' et ' + q.slider.max + ' ' + esc(q.slider.unit) + '</div>';
+    else if (q.type === 'cloud') h += '<div class="reveal-answer" style="background:#4fa3ff;color:#fff">' + ic('cloud') + ' Tape un mot sur ton appareil</div>';
+    else if (q.type === 'open') h += '<div class="reveal-answer" style="background:var(--pink);color:#fff">' + ic('chat') + ' Écris ta réponse sur ton appareil</div>';
+    else if (q.type === 'pin') h += '<div class="reveal-answer" style="background:#e23d7a;color:#fff">' + ic('pin') + ' Touche le bon endroit sur l\'image de ton appareil</div>';
     else if (q.type === 'puzzle') h += '<div class="order-list">' + q.display.map(function (k, i) { return '<div class="c' + (i % 4) + '" style="color:' + (i % 4 === 2 ? 'var(--ink)' : '#fff') + '">' + shape(i) + esc(q.items[k]) + '</div>'; }).join('') + '</div><p style="margin:0;font-weight:800">' + ic('puzzle') + ' Remets ces éléments dans le bon ordre sur ton appareil</p>';
     return h + '</div>';
   }
@@ -1990,6 +2104,21 @@ function revealHtml(q, rev) {
       (rev.avg !== undefined && rev.avg !== null ? '<span class="lbl" style="left:' + pos(rev.avg) + '%;top:34px">moyenne ' + rev.avg + '</span>' : '') +
       '<span class="pin" style="left:' + pos(s.target) + '%"></span><span class="lbl" style="left:' + pos(s.target) + '%">' + ic('target') + ' ' + s.target + '</span></div>' +
       '<div style="text-align:center;font-weight:900;font-size:20px">' + (rev.okCount || 0) + ' / ' + (rev.answered || 0) + ' dans la zone</div></div>';
+  } else if (q.type === 'cloud') {
+    var ws = arr(rev.cloud), mx = 1;
+    ws.forEach(function (w) { if (w.c > mx) mx = w.c; });
+    h += '<div class="wcloud">' + (ws.length ? ws.map(function (w, i) {
+      return '<span class="w' + (i % 6) + '" style="font-size:' + Math.round(18 + 54 * Math.sqrt(w.c / mx)) + 'px">' + esc(w.t) + (w.c > 1 ? '<sup>' + w.c + '</sup>' : '') + '</span>';
+    }).join('') : '<div class="wait-msg">Aucun mot…</div>') + '</div><p class="rev-count">' + plural(rev.answered || 0, 'réponse') + '</p>';
+  } else if (q.type === 'open') {
+    var tx = arr(rev.texts);
+    h += '<div class="open-wall">' + (tx.length ? tx.map(function (t, i) { return '<button class="open-card o' + (i % 4) + '" data-action="h-hide" title="Cliquer pour masquer">' + esc(t) + '</button>'; }).join('') : '<div class="wait-msg">Aucune réponse…</div>') + '</div>' +
+      '<p class="rev-count">' + plural(rev.answered || 0, 'réponse') + ' • clique sur une réponse pour la masquer</p>';
+  } else if (q.type === 'pin') {
+    var pz = q.pin;
+    h += '<div class="pin-reveal"><img src="' + esc(q.image) + '" alt=""><span class="pin-zone" style="left:' + pz.x + '%;top:' + pz.y + '%;width:' + (pz.r * 2) + '%"></span>' +
+      arr(rev.pins).map(function (p) { return '<span class="pin-mark ' + (p[2] ? 'ok' : 'ko') + '" style="left:' + p[0] + '%;top:' + p[1] + '%"></span>'; }).join('') + '</div>' +
+      '<div class="reveal-answer">' + ic('pin') + ' ' + (rev.okCount || 0) + ' / ' + (rev.answered || 0) + ' dans la zone</div>';
   } else if (q.type === 'puzzle') {
     h += '<div class="order-list">' + q.items.map(function (t, i) { return '<div class="c' + (i % 4) + '" style="color:' + (i % 4 === 2 ? 'var(--ink)' : '#fff') + '"><b style="font-size:26px">' + (i + 1) + '.</b> ' + esc(t) + '</div>'; }).join('') + '</div>' +
       '<div class="reveal-answer">' + ic('puzzle') + ' ' + (rev.okCount || 0) + ' / ' + (rev.answered || 0) + ' ont trouvé le bon ordre</div>';
@@ -2041,7 +2170,9 @@ function hostTick() {
 
 /* ---------- Déroulé ---------- */
 function goIntro(i) {
-  var q = H.quiz.questions[i], ms = clamp(2600 + q.text.length * 45, 3500, 7000);
+  var q = H.quiz.questions[i];
+  if (q.type === 'slide') return step({ status: 'slide', index: i, qkey: 'q' + i, phaseEnd: 0, introMs: 0, q: publicQuestion(q), rev: null, top: null, startedAt: 0 });
+  var ms = clamp(2600 + q.text.length * 45, 3500, 7000);
   return step({ status: 'intro', index: i, qkey: 'q' + i, phaseEnd: DB.now() + ms, introMs: ms, q: publicQuestion(q), rev: null, top: null, startedAt: 0 });
 }
 function goQuestion() {
@@ -2053,7 +2184,8 @@ function nextFrom() {
   if (r.status === 'lobby') return goIntro(0);
   if (r.status === 'intro') return goQuestion();
   if (r.status === 'question') return doReveal();
-  if (r.status === 'reveal') { if (curQ().type === 'poll' && r.index + 1 < r.total) return goIntro(r.index + 1); return step({ status: 'board' }); }
+  if (r.status === 'slide') { if (r.index + 1 >= r.total) return goPodium(); return goIntro(r.index + 1); }
+  if (r.status === 'reveal') { if (NOSCORE[curQ().type] && r.index + 1 < r.total) return goIntro(r.index + 1); return step({ status: 'board' }); }
   if (r.status === 'board') { if (r.index + 1 >= r.total) return goPodium(); return goIntro(r.index + 1); }
 }
 function doReveal() {
@@ -2076,9 +2208,9 @@ function doReveal() {
 /* Barème Kahoot : points × (1 − temps/durée ÷ 2), bonus de série jusqu'à +500 */
 function scoreQuestion(q, ans, room) {
   var ps = room.players || {}, T = q.seconds * 1000, base = { standard: 1000, double: 2000, none: 0 }[q.pts] || 0;
-  if (q.type === 'poll') base = 0;
+  if (NOSCORE[q.type]) base = 0;
   var upd = { status: 'reveal' }, results = {}, scores = {}, gains = {};
-  var counts = q.choices ? q.choices.map(function () { return 0; }) : null, words = {}, values = [], okCount = 0, answered = 0;
+  var counts = q.choices ? q.choices.map(function () { return 0; }) : null, words = {}, values = [], okCount = 0, answered = 0, cloud = {}, texts = [], pins = [];
   var acc = (q.accepted || []).map(norm);
   keys(ps).forEach(function (u) {
     var p = ps[u], a = ans[u], st = 'none', frac = 0, disp = '', t = -1, streak = Number(p.streak) || 0;
@@ -2106,6 +2238,22 @@ function scoreQuestion(q, ans, room) {
         var v = Number(c), d = Math.abs(v - q.slider.target), tol = q.slider.tol;
         disp = v + (q.slider.unit ? ' ' + q.slider.unit : ''); values.push(v);
         frac = d < 1e-9 ? 1 : (tol > 0 && d <= tol ? 1 - 0.5 * d / tol : 0); st = frac > 0 ? 'ok' : 'ko';
+      } else if (q.type === 'cloud') {
+        var cw = String(c).replace(/\s+/g, ' ').trim().slice(0, CLOUD_MAX), cn = norm(cw);
+        disp = cw; st = 'poll';
+        if (cn) { if (!cloud[cn]) cloud[cn] = { t: cw.toLowerCase(), c: 0 }; cloud[cn].c++; }
+      } else if (q.type === 'open') {
+        var ot = String(c).replace(/\s+/g, ' ').trim().slice(0, OPEN_MAX);
+        disp = ot; st = 'poll'; if (ot) texts.push(ot);
+      } else if (q.type === 'pin') {
+        var pp = String(c).split(','), px = clamp(Number(pp[0]) / 10, 0, 100), py = clamp(Number(pp[1]) / 10, 0, 100);
+        if (isNaN(px) || isNaN(py)) { st = 'ko'; disp = '?'; }
+        else {
+          var asp = Number(q.aspect) || 1.5, ddx = px - q.pin.x, ddy = (py - q.pin.y) / asp, dist = Math.sqrt(ddx * ddx + ddy * ddy);
+          frac = dist <= q.pin.r ? 1 - 0.5 * dist / q.pin.r : 0; st = frac > 0 ? 'ok' : 'ko';
+          disp = Math.round(px) + ' % / ' + Math.round(py) + ' %' + (frac > 0 ? '' : ' (hors zone)');
+          if (pins.length < 200) pins.push([Math.round(px * 10) / 10, Math.round(py * 10) / 10, frac > 0 ? 1 : 0]);
+        }
       } else if (q.type === 'puzzle') {
         var tok = arr(q.tok), seq = arr(c).map(function (x) { return tok.indexOf(String(x)); });
         disp = seq.map(function (x) { return x === -1 ? '?' : q.items[x]; }).join(' → ');
@@ -2132,6 +2280,14 @@ function scoreQuestion(q, ans, room) {
   var wl = keys(words).map(function (k) { return words[k]; }).sort(function (a, b) { return b.c - a.c; }).slice(0, 10);
   var avg = values.length ? Math.round(values.reduce(function (s, x) { return s + x; }, 0) / values.length * 10) / 10 : null;
   upd.rev = { counts: counts || 0, words: wl.length ? wl : 0, avg: avg, okCount: okCount, answered: answered };
+  if (q.type === 'cloud') {
+    var cl = keys(cloud).map(function (k) { return cloud[k]; }).sort(function (a, b) { return b.c - a.c; }).slice(0, 40);
+    /* plus gros au centre : on alterne gauche / droite */
+    var arranged = []; cl.forEach(function (w, i) { if (i % 2) arranged.push(w); else arranged.unshift(w); });
+    upd.rev.cloud = arranged.length ? arranged : 0;
+  }
+  if (q.type === 'open') upd.rev.texts = texts.length ? shuffle(texts).slice(0, 80) : 0;
+  if (q.type === 'pin') upd.rev.pins = pins.length ? pins : 0;
   return { upd: upd, results: results, scores: scores };
 }
 function goPodium() {
@@ -2170,6 +2326,7 @@ ACT['h-start'] = function () { Snd.init(); nextFrom(); };
 ACT['h-next'] = function () { nextFrom(); };
 ACT['h-skip'] = function () { nextFrom(); };
 ACT['h-full'] = function () { fullscreen(); };
+ACT['h-hide'] = function (el) { el.classList.toggle('hidden-ans'); };
 ACT['h-sound'] = function (el) { Snd.init(); var on = Snd.toggle(); el.innerHTML = ic(on ? 'sound' : 'mute'); if (on && H) { H.music = true; if (H.room.status === 'lobby') Snd.music('lobby'); if (H.room.status === 'question') Snd.music('think'); } };
 ACT['h-lock'] = function () { step({ locked: !H.room.locked }); };
 ACT['h-kick'] = function (el) {
@@ -2372,7 +2529,7 @@ function renderPlayer() {
   }
   P.me = me;
   var sc = $('pScore'); if (sc) sc.textContent = (me.score || 0) + ' pts';
-  if (r.qkey !== P.qkey) { P.qkey = r.qkey; P.sel = []; P.seq = []; P.val = null; }
+  if (r.qkey !== P.qkey) { P.qkey = r.qkey; P.sel = []; P.seq = []; P.val = null; P.pinxy = null; }
   var late = r.status === 'reveal' || r.status === 'board' || r.status === 'podium';
   var key = r.status + '|' + r.qkey + '|' + (isSent() ? 1 : 0) + '|' + (late ? JSON.stringify(me.last || {}) + me.rank + me.score : me.name + me.av);
   if (key === P.key) return;
@@ -2380,6 +2537,9 @@ function renderPlayer() {
   var st = r.settings || {}, q = r.q || {}, cls = 'ph', body = '';
   if (r.status === 'lobby') {
     body = avatarHtml(me.av, 'xxl bounce') + '<div class="ph-big">Tu es dans l\'arène !</div><div class="ph-card">Vois-tu <b>' + esc(me.name) + '</b> au tableau ?<br>La partie va commencer…</div>';
+  } else if (r.status === 'slide') {
+    body = tic('slide', 'xxl') + '<div class="ph-big">' + (st.showQ ? esc(q.text) : 'Regarde le tableau') + '</div>' +
+      (st.showQ && q.body ? '<div class="ph-card slide-ph">' + esc(q.body).replace(/\n/g, '<br>') + '</div>' : '<div style="font-weight:800">Lis bien, la suite arrive…</div>');
   } else if (r.status === 'intro') {
     body = '<div class="chip">Question ' + (r.index + 1) + ' / ' + r.total + '</div>' + tic(q.type, 'xxl') + '<div class="ph-big">' + TYPES[q.type].label + '</div>' +
       (st.showQ ? '<div class="ph-q">' + esc(q.text) + '</div>' : '<div style="font-weight:800">Regarde le tableau… prépare-toi !</div>') +
@@ -2391,7 +2551,7 @@ function renderPlayer() {
     } else body = questionUi(r, q, st);
   } else if (r.status === 'reveal') {
     var l = me.last && me.last.q === r.qkey ? me.last : { st: 'none', g: 0, n: 0 };
-    var map = { ok: ['ok-bg', 'check', 'Bonne réponse !'], part: ['ok-bg', 'check', 'Presque ! Réponse partielle'], ko: ['ko-bg', 'close', 'Raté !'], none: ['none-bg', 'hourglass', 'Temps écoulé…'], poll: ['poll-bg', 'poll', 'Merci pour ton vote !'] }[l.st] || ['none-bg', 'hourglass', ''];
+    var map = { ok: ['ok-bg', 'check', 'Bonne réponse !'], part: ['ok-bg', 'check', 'Presque ! Réponse partielle'], ko: ['ko-bg', 'close', 'Raté !'], none: ['none-bg', 'hourglass', 'Temps écoulé…'], poll: ['poll-bg', q.type === 'poll' ? 'poll' : TYPE_IC[q.type] || 'check', q.type === 'poll' ? 'Merci pour ton vote !' : 'Merci pour ta réponse !'] }[l.st] || ['none-bg', 'hourglass', ''];
     cls += ' ' + map[0];
     body = badge(map[1], 'white') + '<div class="ph-big">' + map[2] + '</div>' +
       (l.st !== 'poll' ? '<div class="gain">+ ' + (l.g || 0) + '</div>' : '') +
@@ -2416,7 +2576,7 @@ function rankLine(me, l) {
 }
 function questionUi(r, q, st) {
   var h = '<div style="display:flex;justify-content:space-between;align-items:center;width:100%"><span class="chip">' + (r.index + 1) + ' / ' + r.total + ' • ' + TYPES[q.type].label + '</span><span class="ph-timer" id="pTimer">' + q.seconds + '</span></div>';
-  if (st.showQ) h += '<div class="ph-q">' + esc(q.text) + '</div>' + (q.image ? revealImg(q, P.pin + r.qkey, 'ph-img') : '');
+  if (st.showQ) h += '<div class="ph-q">' + esc(q.text) + '</div>' + (q.image && q.type !== 'pin' ? revealImg(q, P.pin + r.qkey, 'ph-img') : '');
   var ch = arr(q.choices), i;
   if (q.type === 'single' || q.type === 'tf' || q.type === 'poll' || q.type === 'multi') {
     h += '<div class="ph-tiles' + (ch.length === 2 ? ' two' : '') + '">';
@@ -2425,6 +2585,14 @@ function questionUi(r, q, st) {
     }
     h += '</div>';
     if (q.type === 'multi') h += '<button class="btn yellow big full" data-action="p-send-multi" id="pMulti"' + (P.sel.length ? '' : ' disabled') + '>Valider (' + P.sel.length + ')</button>';
+  } else if (q.type === 'cloud') {
+    h += '<div class="ph-card" style="display:grid;gap:12px"><label class="field">Ton mot<input class="inp" id="pText" maxlength="' + CLOUD_MAX + '" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:22px"></label><button class="btn pink big full" data-action="p-send-text">Envoyer ' + ic('next') + '</button></div>';
+  } else if (q.type === 'open') {
+    h += '<div class="ph-card" style="display:grid;gap:10px"><label class="field">Ta réponse<textarea class="inp" id="pText" rows="3" maxlength="' + OPEN_MAX + '" style="font-size:19px;resize:none" data-input="p-count"></textarea></label><small id="pCount" style="text-align:right;color:var(--muted);font-weight:800">0 / ' + OPEN_MAX + '</small><button class="btn pink big full" data-action="p-send-text">Envoyer ' + ic('next') + '</button></div>';
+  } else if (q.type === 'pin') {
+    h += '<p style="margin:0;font-weight:800">Touche le bon endroit sur l\'image</p><div class="pin-pad" data-action="p-pin"><img src="' + esc(q.image) + '" alt="" draggable="false">' +
+      (P.pinxy ? '<span class="pin-dot" style="left:' + P.pinxy[0] + '%;top:' + P.pinxy[1] + '%">' + ic('pin') + '</span>' : '') + '</div>' +
+      '<button class="btn yellow big full" data-action="p-send-pin" id="pPinBtn"' + (P.pinxy ? '' : ' disabled') + '>Valider ' + ic('next') + '</button>';
   } else if (q.type === 'type') {
     h += '<div class="ph-card" style="display:grid;gap:12px"><label class="field">Ta réponse<input class="inp" id="pType" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:22px"></label><button class="btn pink big full" data-action="p-send-type">Envoyer ' + ic('next') + '</button></div>';
   } else if (q.type === 'slider') {
@@ -2475,6 +2643,22 @@ ACT['p-pick'] = function (el) {
   var b = $('pMulti'); if (b) { b.disabled = !P.sel.length; b.textContent = 'Valider (' + P.sel.length + ')'; }
 };
 ACT['p-send-multi'] = function () { if (P.sel.length) pSend(P.sel.slice().sort()); };
+ACT['p-send-text'] = function () {
+  var q = P.room && P.room.q, max = q && q.type === 'open' ? OPEN_MAX : CLOUD_MAX;
+  var v = String(($('pText') || {}).value || '').replace(/\s+/g, ' ').trim();
+  if (!v) { toast('Écris ta réponse avant d\'envoyer.'); return; }
+  pSend(v.slice(0, max));
+};
+ACT['p-pin'] = function (el, ev) {
+  var img = el.querySelector('img'); if (!img) return;
+  var b = img.getBoundingClientRect(); if (!b.width) return;
+  P.pinxy = [Math.round(clamp((ev.clientX - b.left) / b.width * 100, 0, 100) * 10) / 10, Math.round(clamp((ev.clientY - b.top) / b.height * 100, 0, 100) * 10) / 10];
+  var d = el.querySelector('.pin-dot');
+  if (!d) { d = document.createElement('span'); d.className = 'pin-dot'; d.innerHTML = ic('pin'); el.appendChild(d); }
+  d.style.left = P.pinxy[0] + '%'; d.style.top = P.pinxy[1] + '%';
+  var btn = $('pPinBtn'); if (btn) btn.disabled = false;
+};
+ACT['p-send-pin'] = function () { if (P.pinxy) pSend(Math.round(P.pinxy[0] * 10) + ',' + Math.round(P.pinxy[1] * 10)); };
 ACT['p-send-type'] = function () {
   var v = String(($('pType') || {}).value || '').trim();
   if (!v) { toast('Écris ta réponse avant d\'envoyer.'); return; }
@@ -2513,6 +2697,7 @@ document.addEventListener('click', function (ev) {
 document.addEventListener('input', function (ev) {
   var el = ev.target;
   if (el.getAttribute('data-input') === 'lib-search') { libSearch(); return; }
+  if (el.getAttribute('data-input') === 'p-count') { var pc = $('pCount'); if (pc) pc.textContent = el.value.length + ' / ' + OPEN_MAX; return; }
   if (el.getAttribute('data-input') === 'p-range' && P) { P.val = Number(el.value); var v = $('pVal'); if (v) v.textContent = fmtNum(P.val); return; }
   if (el.hasAttribute('data-ed') || el.hasAttribute('data-ch') || el.hasAttribute('data-acc') || el.hasAttribute('data-it') || el.hasAttribute('data-sl')) edInput(el);
   if (el.id === 'jPin') { el.value = el.value.replace(/\D/g, '').slice(0, 6); }
@@ -2529,6 +2714,7 @@ document.addEventListener('keydown', function (ev) {
   if (id === 'jPin') ACT['join-check']();
   else if (id === 'jName' || id === 'jMembers') ACT['join-go']();
   else if (id === 'pType') ACT['p-send-type']();
+  else if (id === 'pText' && ev.target.tagName === 'INPUT') ACT['p-send-text']();
 });
 window.addEventListener('resize', function () { var c = $('confetti'); if (c) { c.width = window.innerWidth; c.height = window.innerHeight; } });
 
