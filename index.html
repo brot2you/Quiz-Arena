@@ -1236,20 +1236,20 @@ var DB = null;
 var QA_EXT_KEY='quizArenaExternalFirebaseV1',QA_MODE_KEY='quizArenaFirebaseModeV1';
 var QA_DEFAULT_CONFIG=window.QUIZ_ARENA_FIREBASE_CONFIG||{},QA_BACKEND_MODE='owner',QA_BACKEND_CONFIG=QA_DEFAULT_CONFIG;
 function qaValidConfig(c){
- if(!c||typeof c!=='object'||!/^[a-z0-9-]{4,90}$/.test(c.projectId||'')||!/^AIza[\\w-]{20,200}$/.test(c.apiKey||'')||c.authDomain!==c.projectId+'.firebaseapp.com'||!/^1:\\d+:web:[a-z0-9]+$/i.test(c.appId||''))return false;
- try{var u=new URL(c.databaseURL);return u.protocol==='https:'&&/(^|\\.)(firebasedatabase\\.app|firebaseio\\.com)$/.test(u.hostname);}catch(e){return false;}
+ if(!c||typeof c!=='object'||!/^[a-z0-9-]{4,90}$/.test(c.projectId||'')||!/^AIza[\w-]{20,200}$/.test(c.apiKey||'')||c.authDomain!==c.projectId+'.firebaseapp.com'||!/^1:\d+:web:[a-z0-9]+$/i.test(c.appId||''))return false;
+ try{var u=new URL(c.databaseURL);return u.protocol==='https:'&&/(^|\.)(firebasedatabase\.app|firebaseio\.com)$/.test(u.hostname);}catch(e){return false;}
 }
 function qaPick(c){return {apiKey:c.apiKey,authDomain:c.authDomain,databaseURL:c.databaseURL,projectId:c.projectId,appId:c.appId};}
 function qaReadConfig(raw){
  var value;try{value=JSON.parse(raw);}catch(e){
-  var m=String(raw).match(/(?:const|let|var)\\s+firebaseConfig\\s*=\\s*(\\{[\\s\\S]*?\\})\\s*;?/);
+  var m=String(raw).match(/(?:const|let|var)\s+firebaseConfig\s*=\s*(\{[\s\S]*?\})\s*;?/);
   if(!m)throw Error('Colle le bloc firebaseConfig complet.');
-  try{value=JSON.parse(m[1].replace(/([{,]\\s*)([A-Za-z_]\\w*)\\s*:/g,'$1"$2":').replace(/,\\s*}/g,'}'));}catch(e2){throw Error('Configuration illisible. Vérifie les cinq champs Firebase.');}
+  try{value=JSON.parse(m[1].replace(/([{,]\s*)([A-Za-z_]\w*)\s*:/g,'$1"$2":').replace(/,\s*}/g,'}'));}catch(e2){throw Error('Configuration illisible. Vérifie les cinq champs Firebase.');}
  }
  if(!qaValidConfig(value)||value.projectId===QA_DEFAULT_CONFIG.projectId)throw Error('Projet Firebase personnel invalide ou identique à BROT2YOU.');
  return qaPick(value);
 }
-function qaEncode(c){return btoa(unescape(encodeURIComponent(JSON.stringify(qaPick(c))))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');}
+function qaEncode(c){return btoa(unescape(encodeURIComponent(JSON.stringify(qaPick(c))))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function qaDecode(raw){
  if(!raw||raw.length>2200||!/^[A-Za-z0-9_-]+$/.test(raw))throw Error('Lien Firebase invalide.');
  var v=raw.replace(/-/g,'+').replace(/_/g,'/');v+='='.repeat((4-v.length%4)%4);
@@ -1275,16 +1275,7 @@ function qaFirebaseModal(){
  '<p class="hint">Ne colle jamais de clé privée. Les identifiants Web publics sont transmis par QR code aux élèves.</p>'+
  '<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" data-action="close-modal">Annuler</button><button class="btn blue" data-action="qa-save-backend">Enregistrer et recharger</button></div>');
 }
-ACT['qa-options']=function(){qaFirebaseModal();};
-ACT['qa-save-backend']=function(){
- var el=document.querySelector('input[name="qa-backend"]:checked'),mode=el&&el.value||'owner';
- try{
-  if(mode==='external')lsSet(QA_EXT_KEY,qaReadConfig($('qa-config-text').value));
-  lsSet(QA_MODE_KEY,mode);
-  lsDel(K_HOST);lsDel(K_PLAYER);
-  var url=new URL(location.href);url.search='';url.hash='';location.assign(url.href);
- }catch(e){notice(e.message,'err');}
-};
+
 
 function initBackend(){var cfg=QA_BACKEND_CONFIG,local=/(?:[?&])demo=1/.test(location.search);DB=(!local&&cfg.apiKey&&cfg.databaseURL&&cfg.projectId)?new FirebaseBackend(cfg):new LocalBackend();return DB;}
 
@@ -1530,6 +1521,16 @@ function qrSvg(text) {
 /* ===================== 05 · INTERFACE GÉNÉRALE ===================== */
 var VIEW = 'home';
 var ACT = {};          /* actions déclenchées par data-action */
+ACT['qa-options']=function(){qaFirebaseModal();};
+ACT['qa-save-backend']=function(){
+ var el=document.querySelector('input[name="qa-backend"]:checked'),mode=el&&el.value||'owner';
+ try{
+  if(mode==='external')lsSet(QA_EXT_KEY,qaReadConfig($('qa-config-text').value));
+  lsSet(QA_MODE_KEY,mode);
+  lsDel(K_HOST);lsDel(K_PLAYER);
+  var url=new URL(location.href);url.search='';url.hash='';location.assign(url.href);
+ }catch(e){notice(e.message,'err');}
+};
 var CRUMBS = { home: 'L\'arène t\'attend !', library: 'Mon studio de quiz', editor: 'Atelier de création', join: 'Rejoindre une partie', reports: 'Rapports de parties', game: 'Partie en direct' };
 
 function notice(msg, kind) {
@@ -2080,7 +2081,7 @@ function createGame(id, o) {
   var play = buildPlayQuiz(quiz, o), uid;
   notice('Ouverture de la salle…');
   DB.ready.then(function (u) {
-    uid = u;
+    uid = DB.uid || u;
     var tries = 0;
     function attempt() {
       if (tries++ > 15) throw new Error('aucun code PIN libre.');
