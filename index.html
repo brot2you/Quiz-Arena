@@ -1527,6 +1527,17 @@ function qrSvg(text) {
 var VIEW = 'home';
 var ACT = {};          /* actions déclenchées par data-action */
 ACT['qa-options']=function(){qaFirebaseModal();};
+ACT['qa-show-uid']=function(){
+ if(!DB||DB.kind!=='firebase'){notice('Choisis un projet Firebase pour obtenir ton UID.','err');return;}
+ DB.ready.then(function(){return DB.loginTeacher();}).then(function(uid){
+  var box=document.createElement('div');
+  box.style.cssText='padding:16px;background:#edf4ff;border:2px solid #c8dcf5;border-radius:15px;font:700 16px/1.7 monospace;overflow-wrap:anywhere;user-select:all';
+  box.textContent=uid;
+  modal('<h2>🔑 Mon UID Firebase</h2><p>Projet : <b>'+esc(QA_BACKEND_CONFIG.projectId)+'</b></p><p>Identifiant de mon compte Google :</p><div id="qa-uid-slot"></div><p class="hint">Copie cet identifiant dans les règles privées de QUIZ ARENA à la place de REPLACE_WITH_QUIZ_ARENA_OWNER_UID.</p><button class="btn blue" data-action="close-modal">Fermer</button>');
+  var slot=$('qa-uid-slot');if(slot)slot.appendChild(box);
+ }).catch(function(e){notice('Connexion Google impossible : '+(e.code||e.message||e),'err');});
+};
+
 ACT['qa-save-backend']=function(){
  var el=document.querySelector('input[name="qa-backend"]:checked'),mode=el&&el.value||'owner';
  try{
@@ -1603,7 +1614,7 @@ function renderHome() {
   if (pl && pl.pin && pl.uid === DB.uid) h += '<div class="resume"><span>' + ic('phone') + ' Tu étais dans la partie ' + esc(pl.pin) + '.</span><span style="display:flex;gap:8px"><button class="btn blue" data-action="resume-player">' + ic('next') + ' Revenir dans la partie</button><button class="btn" data-action="drop-player">Oublier</button></span></div>';
   if (draft && draft.questions && !sameAsSaved(draft)) h += '<div class="resume"><span>' + ic('edit') + ' Brouillon non enregistré : « ' + esc(draft.title || 'Sans titre') + ' ».</span><span style="display:flex;gap:8px"><button class="btn violet" data-action="restore-draft">Reprendre le brouillon</button><button class="btn" data-action="drop-draft">Jeter</button></span></div>';
   if (DB && DB.kind === 'local') h += '<div class="mode-banner">' + ic('flask') + ' <b>Mode démo local.</b> Firebase n\'est pas encore configuré : tu peux créer tes quiz et tester une partie en ouvrant cette page dans plusieurs onglets du même navigateur (un onglet prof, les autres élèves). Pour jouer avec les téléphones des élèves, suis le README (10 minutes, gratuit).</div>';
-  h += '<div class="qa-backend-bar"><span>☁️ Firebase : <b>'+esc(DB.kind==='local'?'Démo locale':QA_BACKEND_MODE==='owner'?'BROT2YOU (privé)':QA_BACKEND_CONFIG.projectId)+'</b></span><button class="btn blue sm" data-action="qa-options">⚙️ Choisir mon Firebase</button></div>';
+  h += '<div class="qa-backend-bar"><span>☁️ Firebase : <b>'+esc(DB.kind==='local'?'Démo locale':QA_BACKEND_MODE==='owner'?'BROT2YOU (privé)':QA_BACKEND_CONFIG.projectId)+'</b></span><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn blue sm" data-action="qa-options">⚙️ Choisir mon Firebase</button><button class="btn sm" data-action="qa-show-uid">🔑 Afficher mon UID Firebase</button></span></div>';
   h += '<div class="hero"><div class="hero-tiles"><span class="c0">' + shape(0) + '</span><span class="c1">' + shape(1) + '</span><span class="c2">' + shape(2) + '</span><span class="c3">' + shape(3) + '</span></div>' +
     '<div class="hero-logo"><strong>QUIZ <em>ARENA</em></strong><span class="by">BY BROT2YOU</span></div><p class="tag">Crée. Défie. Joue. Célèbre.</p></div>';
   h += '<div class="entry-grid">' +
