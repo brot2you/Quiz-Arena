@@ -14,6 +14,39 @@ L'appli tient en un seul fichier `index.html`, en JavaScript ES5 compatible avec
 ## Essayer tout de suite (mode démo, sans rien installer)
 Si `firebase-config.js` est vide, l'appli démarre en **mode démo local**. Ouvre la page dans plusieurs onglets du même navigateur : un onglet sert d'écran prof, les autres d'élèves. Ça suffit pour préparer et tester un quiz. Pour que les téléphones des élèves se connectent, il faut Firebase.
 
+## Firebase hybride — sécurité du projet BROT2YOU et projets personnels
+
+QUIZ ARENA dispose désormais de trois modes :
+
+- **BROT2YOU (privé)** : utilise `quiz-arena-brot2you`. La protection réelle dépend des règles publiées dans ce projet.
+- **Mon propre Firebase** : un autre enseignant utilise son projet Firebase indépendant ; ses élèves reçoivent sa configuration Web publique dans le QR code / lien.
+- **Démo locale** : ajouter `?demo=1` à l'adresse pour jouer dans plusieurs onglets du même navigateur, sans serveur.
+
+### Protéger le Firebase BROT2YOU — action indispensable
+
+1. Dans **Firebase Console**, choisir le projet **quiz-arena-brot2you** → **Authentication** → **Utilisateurs**. Repérer l'**UID du compte Google utilisé comme professeur** sur **ce projet précis**. Cet UID peut être différent de celui de BUZZ ARENA.
+2. Ouvrir **[database.rules-private-owner.json](database.rules-private-owner.json)** et remplacer `REPLACE_WITH_QUIZ_ARENA_OWNER_UID` par cet UID (en conservant les apostrophes).
+3. Copier **tout le fichier adapté** dans **Realtime Database → Règles** du projet **quiz-arena-brot2you**, puis cliquer sur **Publier**.
+4. Dans **Authentication → Méthode de connexion**, activer **Google** pour le professeur et **Anonyme** pour les élèves ; autoriser `brot2you.github.io` dans **Domaines autorisés**.
+5. Tester une partie avec le compte Google du propriétaire et un smartphone élève. Un autre compte Google ne doit pas pouvoir créer de partie sur ce Firebase.
+
+⚠️ **Ne pas publier le fichier privé avec l'UID provisoire** : cela bloquerait aussi le propriétaire. Tant que ces règles privées ne sont pas publiées, d'autres utilisateurs peuvent encore consommer tes quotas selon les règles Firebase en service. La séparation visuelle des modes n'est pas une sécurité.
+
+### Configuration d'un Firebase personnel (enseignants extérieurs)
+
+1. Créer un **nouveau projet Firebase** à soi (pas `quiz-arena-brot2you`).
+2. Activer **Authentication → Google + Anonyme** ; ajouter `brot2you.github.io` aux domaines autorisés.
+3. Créer **Realtime Database** et y publier le contenu complet de **[database.rules.json](database.rules.json)**, prévu pour qu'un professeur Google crée ses propres parties.
+4. Récupérer les valeurs de **Paramètres du projet → Application Web → firebaseConfig** : `apiKey`, `authDomain`, `databaseURL`, `projectId`, `appId`. Il s'agit d'une **configuration Web publique**, pas d'une clé privée.
+5. Dans QUIZ ARENA, cliquer **⚙️ Choisir mon Firebase** → **Mon propre Firebase**. Coller la configuration et **Enregistrer et recharger**.
+6. Lancer un quiz depuis sa bibliothèque. La connexion Google professeur est demandée lors de l'ouverture de la salle. Les élèves scannent **le QR code de cette partie** ou ouvrent le lien correspondant.
+
+Le code PIN **seul** ne suffit pas à identifier un Firebase personnel inconnu depuis un autre appareil : utiliser le QR code ou lien fourni. Les quiz et rapports continuent d'être conservés localement dans le navigateur, pas dans le Firebase BROT2YOU.
+
+**Attention à l'authentification :** les anciennes parties créées sous une identité Firebase anonyme peuvent ne plus être récupérables comme professeur après activation de la connexion Google. Terminer les parties existantes avant de changer les règles et tester une nouvelle session.
+
+---
+
 ## Installer Firebase (environ 10 minutes, gratuit)
 1. Va sur https://console.firebase.google.com, clique sur **Créer un projet** (Google Analytics n'est pas nécessaire).
 2. **Créer › Authentication › Commencer › Mode de connexion** : active **Anonyme**.
