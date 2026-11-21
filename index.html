@@ -1126,11 +1126,16 @@ function FirebaseBackend(cfg) {
       self._db.ref('.info/serverTimeOffset').on('value', function (s) { offset = Number(s.val()) || 0; });
       self._db.ref('.info/connected').on('value', function (s) { self.connected = !!s.val(); if (self.onConn) self.onConn(self.connected); });
       return new Promise(function (res, rej) {
-        var auth=firebase.auth(app),settled=false;
+        var auth=firebase.auth(app),settled=false,startingAnonymous=false;
         function found(u){if(u){self.uid=u.uid;if(!settled){settled=true;res(u.uid);}}}
-        auth.onAuthStateChanged(found);
-        if(auth.currentUser)found(auth.currentUser);
-        else auth.signInAnonymously().then(function(x){found(x.user);}).catch(function(e){if(!settled)rej(e);});
+        // Respecter la restauration du compte Google avant de démarrer une session anonyme.
+        auth.onAuthStateChanged(function(u){
+          if(u){found(u);return;}
+          if(!settled&&!startingAnonymous){
+            startingAnonymous=true;
+            auth.signInAnonymously().then(function(x){found(x.user);}).catch(function(e){if(!settled)rej(e);});
+          }
+        });
       });
     });
   self.loginTeacher=function(){
