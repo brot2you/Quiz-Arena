@@ -3,7 +3,7 @@
     "rooms": {
       "$pin": {
         ".read": "auth != null && $pin.matches(/^[0-9]{6}$/) && (!data.exists() || data.child('expiresAt').val() > now)",
-        ".write": "auth != null && $pin.matches(/^[0-9]{6}$/) && ((!data.exists() && auth.uid === 'REPLACE_WITH_QUIZ_ARENA_OWNER_UID' && auth.token.firebase.sign_in_provider === 'google.com' && newData.child('hostUid').val() === auth.uid) || (data.exists() && data.child('hostUid').val() === auth.uid))",
+        ".write": "auth != null && $pin.matches(/^[0-9]{6}$/) && ((!data.exists() && auth.uid === 'RvW1UikqPndMhM0pYb9FVzrCsNa2' && auth.token.firebase.sign_in_provider === 'google.com' && newData.child('hostUid').val() === auth.uid) || (data.exists() && data.child('hostUid').val() === auth.uid))",
         ".validate": "newData.hasChildren(['hostUid', 'expiresAt', 'status']) && ((data.exists() && newData.child('hostUid').val() === data.child('hostUid').val()) || (!data.exists() && newData.child('hostUid').val() === auth.uid)) && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() < now + 86400001",
         "players": {
           "$uid": {
