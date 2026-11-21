@@ -529,6 +529,12 @@ img.reveal-full{max-height:26vh;max-width:min(560px,90%);border-radius:22px;box-
 .avatar.xs .avin,.avatar.sm .avin,.avatar.tag .avin,.avatar.md .avin{transform:scale(1.22);transform-origin:50% 42%}
 .avatar.tag{width:42px;height:42px;margin:-7px 4px -7px -10px}
 
+.qa-backend-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:linear-gradient(125deg,#e5f7ff,#f3e9ff);border:2px solid #bddeef;border-radius:18px;padding:13px 17px;margin:12px 0 18px;color:#224d8b;font-weight:800}
+.qa-backend-box{display:flex;flex-direction:column;gap:10px;padding:13px;background:#f3f5ff;border:1px solid #d5def7;border-radius:15px;margin:15px 0}
+.qa-backend-box label{display:flex;align-items:center;gap:10px;cursor:pointer}
+.qa-backend-box input{width:18px;height:18px;accent-color:#7464d8}
+.qa-backend-hint{padding:10px 12px;background:#edf4ff;border-radius:14px;font-weight:800;color:#304c86}
+@media(max-width:600px){.qa-backend-bar{align-items:stretch}.qa-backend-bar .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -1114,18 +1120,24 @@ function FirebaseBackend(cfg) {
     .then(function () { return loadScript(base + 'firebase-auth-compat.js'); })
     .then(function () { return loadScript(base + 'firebase-database-compat.js'); })
     .then(function () {
-      firebase.initializeApp(cfg);
-      self._db = firebase.database();
+      var app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
+      self._db=firebase.database(app);
       self.TS = firebase.database.ServerValue.TIMESTAMP;
       self._db.ref('.info/serverTimeOffset').on('value', function (s) { offset = Number(s.val()) || 0; });
       self._db.ref('.info/connected').on('value', function (s) { self.connected = !!s.val(); if (self.onConn) self.onConn(self.connected); });
       return new Promise(function (res, rej) {
-        firebase.auth().onAuthStateChanged(function (u) { if (u) { self.uid = u.uid; res(u.uid); } });
-        firebase.auth().signInAnonymously().catch(function (e) {
-          rej(new Error('Connexion anonyme refusée : active « Anonyme » dans Firebase > Authentication. (' + e.code + ')'));
-        });
+        var auth=firebase.auth(app),settled=false;
+        function found(u){if(u){self.uid=u.uid;if(!settled){settled=true;res(u.uid);}}}
+        auth.onAuthStateChanged(found);
+        if(auth.currentUser)found(auth.currentUser);
+        else auth.signInAnonymously().then(function(x){found(x.user);}).catch(function(e){if(!settled)rej(e);});
       });
     });
+  self.loginTeacher=function(){
+    var a=firebase.auth();
+    if(a.currentUser&&!a.currentUser.isAnonymous&&a.currentUser.providerData.some(function(p){return p.providerId==='google.com';})){self.uid=a.currentUser.uid;return Promise.resolve(self.uid);}
+    return a.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(x){self.uid=x.user.uid;return self.uid;});
+  };
   self.now = function () { return Date.now() + offset; };
   self.get = function (p) { return self._db.ref(p).once('value').then(function (s) { return s.val(); }); };
   self.set = function (p, v) { return self._db.ref(p).set(v); };
@@ -1219,13 +1231,62 @@ function LocalBackend() {
 }
 
 var DB = null;
-function initBackend() {
-  var cfg = window.QUIZ_ARENA_FIREBASE_CONFIG || {};
-  var forceLocal = /[?&]demo=1/.test(location.search);
-  if (!forceLocal && cfg.apiKey && cfg.databaseURL && cfg.projectId) DB = new FirebaseBackend(cfg);
-  else DB = new LocalBackend();
-  return DB;
+
+/* Isolation multi-Firebase: configuration web publique uniquement */
+var QA_EXT_KEY='quizArenaExternalFirebaseV1',QA_MODE_KEY='quizArenaFirebaseModeV1';
+var QA_DEFAULT_CONFIG=window.QUIZ_ARENA_FIREBASE_CONFIG||{},QA_BACKEND_MODE='owner',QA_BACKEND_CONFIG=QA_DEFAULT_CONFIG;
+function qaValidConfig(c){
+ if(!c||typeof c!=='object'||!/^[a-z0-9-]{4,90}$/.test(c.projectId||'')||!/^AIza[\\w-]{20,200}$/.test(c.apiKey||'')||c.authDomain!==c.projectId+'.firebaseapp.com'||!/^1:\\d+:web:[a-z0-9]+$/i.test(c.appId||''))return false;
+ try{var u=new URL(c.databaseURL);return u.protocol==='https:'&&/(^|\\.)(firebasedatabase\\.app|firebaseio\\.com)$/.test(u.hostname);}catch(e){return false;}
 }
+function qaPick(c){return {apiKey:c.apiKey,authDomain:c.authDomain,databaseURL:c.databaseURL,projectId:c.projectId,appId:c.appId};}
+function qaReadConfig(raw){
+ var value;try{value=JSON.parse(raw);}catch(e){
+  var m=String(raw).match(/(?:const|let|var)\\s+firebaseConfig\\s*=\\s*(\\{[\\s\\S]*?\\})\\s*;?/);
+  if(!m)throw Error('Colle le bloc firebaseConfig complet.');
+  try{value=JSON.parse(m[1].replace(/([{,]\\s*)([A-Za-z_]\\w*)\\s*:/g,'$1"$2":').replace(/,\\s*}/g,'}'));}catch(e2){throw Error('Configuration illisible. Vérifie les cinq champs Firebase.');}
+ }
+ if(!qaValidConfig(value)||value.projectId===QA_DEFAULT_CONFIG.projectId)throw Error('Projet Firebase personnel invalide ou identique à BROT2YOU.');
+ return qaPick(value);
+}
+function qaEncode(c){return btoa(unescape(encodeURIComponent(JSON.stringify(qaPick(c))))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');}
+function qaDecode(raw){
+ if(!raw||raw.length>2200||!/^[A-Za-z0-9_-]+$/.test(raw))throw Error('Lien Firebase invalide.');
+ var v=raw.replace(/-/g,'+').replace(/_/g,'/');v+='='.repeat((4-v.length%4)%4);
+ var c=JSON.parse(decodeURIComponent(escape(atob(v))));
+ if(!qaValidConfig(c)||c.projectId===QA_DEFAULT_CONFIG.projectId)throw Error('Firebase de la partie invalide.');
+ return qaPick(c);
+}
+function qaLoadBackend(){
+ var p=new URLSearchParams(location.search),invite=p.get('fb');
+ if(invite){QA_BACKEND_CONFIG=qaDecode(invite);QA_BACKEND_MODE='external';return;}
+ var c=lsGet(QA_EXT_KEY,null);
+ if(lsGet(QA_MODE_KEY,'owner')==='external'&&qaValidConfig(c)&&c.projectId!==QA_DEFAULT_CONFIG.projectId){QA_BACKEND_CONFIG=qaPick(c);QA_BACKEND_MODE='external';}
+ else{QA_BACKEND_CONFIG=QA_DEFAULT_CONFIG;QA_BACKEND_MODE='owner';}
+}
+function qaFirebaseModal(){
+ var c=lsGet(QA_EXT_KEY,null);
+ modal('<h2>☁️ Choisir le Firebase de la partie</h2>'+
+ '<p>Chaque enseignant peut utiliser son propre projet, sans consommer les quotas BROT2YOU.</p>'+
+ '<div class="qa-backend-box"><label><input type="radio" name="qa-backend" value="owner" '+(QA_BACKEND_MODE==='owner'?'checked':'')+'> 🔒 BROT2YOU (propriétaire uniquement)</label>'+
+ '<label><input type="radio" name="qa-backend" value="external" '+(QA_BACKEND_MODE==='external'?'checked':'')+'> 🟣 Mon propre Firebase</label></div>'+
+ '<p class="hint">Pour un Firebase personnel : active Google et Anonyme, autorise brot2you.github.io dans Authentication et publie les règles de QUIZ ARENA dans Realtime Database.</p>'+
+ '<textarea class="inp" id="qa-config-text" rows="7" style="width:100%;font:13px/1.45 monospace;min-height:150px" placeholder="const firebaseConfig = { apiKey: ..., authDomain: ..., databaseURL: ..., projectId: ..., appId: ... };">'+esc(c?JSON.stringify(c,null,2):'')+'</textarea>'+
+ '<p class="hint">Ne colle jamais de clé privée. Les identifiants Web publics sont transmis par QR code aux élèves.</p>'+
+ '<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" data-action="close-modal">Annuler</button><button class="btn blue" data-action="qa-save-backend">Enregistrer et recharger</button></div>');
+}
+ACT['qa-options']=function(){qaFirebaseModal();};
+ACT['qa-save-backend']=function(){
+ var el=document.querySelector('input[name="qa-backend"]:checked'),mode=el&&el.value||'owner';
+ try{
+  if(mode==='external')lsSet(QA_EXT_KEY,qaReadConfig($('qa-config-text').value));
+  lsSet(QA_MODE_KEY,mode);
+  lsDel(K_HOST);lsDel(K_PLAYER);
+  var url=new URL(location.href);url.search='';url.hash='';location.assign(url.href);
+ }catch(e){notice(e.message,'err');}
+};
+
+function initBackend(){var cfg=QA_BACKEND_CONFIG,local=/(?:[?&])demo=1/.test(location.search);DB=(!local&&cfg.apiKey&&cfg.databaseURL&&cfg.projectId)?new FirebaseBackend(cfg):new LocalBackend();return DB;}
 
 /* ===================== 04 · SONS (synthétisés, libres de droits) & CONFETTIS ===================== */
 /* Moteur sonore : instruments synthétisés (libres de droits), réverbération, musique calée sur l'horloge audio */
@@ -1536,6 +1597,7 @@ function renderHome() {
   if (pl && pl.pin && pl.uid === DB.uid) h += '<div class="resume"><span>' + ic('phone') + ' Tu étais dans la partie ' + esc(pl.pin) + '.</span><span style="display:flex;gap:8px"><button class="btn blue" data-action="resume-player">' + ic('next') + ' Revenir dans la partie</button><button class="btn" data-action="drop-player">Oublier</button></span></div>';
   if (draft && draft.questions && !sameAsSaved(draft)) h += '<div class="resume"><span>' + ic('edit') + ' Brouillon non enregistré : « ' + esc(draft.title || 'Sans titre') + ' ».</span><span style="display:flex;gap:8px"><button class="btn violet" data-action="restore-draft">Reprendre le brouillon</button><button class="btn" data-action="drop-draft">Jeter</button></span></div>';
   if (DB && DB.kind === 'local') h += '<div class="mode-banner">' + ic('flask') + ' <b>Mode démo local.</b> Firebase n\'est pas encore configuré : tu peux créer tes quiz et tester une partie en ouvrant cette page dans plusieurs onglets du même navigateur (un onglet prof, les autres élèves). Pour jouer avec les téléphones des élèves, suis le README (10 minutes, gratuit).</div>';
+  h += '<div class="qa-backend-bar"><span>☁️ Firebase : <b>'+esc(DB.kind==='local'?'Démo locale':QA_BACKEND_MODE==='owner'?'BROT2YOU (privé)':QA_BACKEND_CONFIG.projectId)+'</b></span><button class="btn blue sm" data-action="qa-options">⚙️ Choisir mon Firebase</button></div>';
   h += '<div class="hero"><div class="hero-tiles"><span class="c0">' + shape(0) + '</span><span class="c1">' + shape(1) + '</span><span class="c2">' + shape(2) + '</span><span class="c3">' + shape(3) + '</span></div>' +
     '<div class="hero-logo"><strong>QUIZ <em>ARENA</em></strong><span class="by">BY BROT2YOU</span></div><p class="tag">Crée. Défie. Joue. Célèbre.</p></div>';
   h += '<div class="entry-grid">' +
@@ -1974,7 +2036,7 @@ var LAUNCH = { id: null, o: null };
 
 function joinUrl(pin) {
   var base = location.origin + location.pathname.replace(/index\.html$/, '');
-  return base + '?pin=' + pin + (/[?&]demo=1/.test(location.search) ? '&demo=1' : '');
+  return base + '?pin=' + pin + (/[?&]demo=1/.test(location.search) ? '&demo=1' : (QA_BACKEND_MODE==='external'?'&fb='+encodeURIComponent(qaEncode(QA_BACKEND_CONFIG)):''));
 }
 function shortUrl() { return (location.host + location.pathname.replace(/index\.html$/, '')).replace(/\/$/, ''); }
 
@@ -1998,6 +2060,7 @@ function renderLaunch() {
     sw('shuffleA', 'Mélanger l\'ordre des réponses', 'Limite la copie sur le voisin') +
     sw('nickGen', 'Pseudos imposés (générateur)', 'Les élèves tirent un pseudo amusant au hasard : pas de pseudo déplacé') +
     sw('music', 'Musique et effets sonores', 'Sur l\'écran du prof') +
+    '<p class="qa-backend-hint">☁️ Projet : <b>'+esc(DB.kind==='local'?'Démo locale':QA_BACKEND_MODE==='owner'?'BROT2YOU (privé)':QA_BACKEND_CONFIG.projectId)+'</b> <button class="btn sm" data-action="qa-options">Changer de Firebase</button></p>' +
     '<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" data-action="close-modal">Annuler</button><button class="btn green big" data-action="launch-go">' + ic('play') + ' Ouvrir la salle</button></div>');
 }
 ACT['launch'] = function (el) { launchSetup(el.getAttribute('data-id')); };
@@ -2006,7 +2069,10 @@ ACT['launch-go'] = function () {
   var boxes = document.querySelectorAll('[data-opt]');
   for (var i = 0; i < boxes.length; i++) LAUNCH.o[boxes[i].getAttribute('data-opt')] = boxes[i].checked;
   var p = lsGet(K_PREFS, {}); p.launch = LAUNCH.o; lsSet(K_PREFS, p);
-  Snd.init(); closeModal(); createGame(LAUNCH.id, LAUNCH.o);
+  Snd.init();
+  if(DB.kind==='local'){closeModal();createGame(LAUNCH.id,LAUNCH.o);return;}
+  DB.ready.then(function(){return DB.loginTeacher();}).then(function(){closeModal();createGame(LAUNCH.id,LAUNCH.o);})
+    .catch(function(e){notice('Connexion Google nécessaire pour créer une partie : '+(e.code||e.message||e),'err');});
 };
 
 function createGame(id, o) {
@@ -2817,6 +2883,7 @@ function boot() {
   Store.load();
   var prefs = lsGet(K_PREFS, {});
   if (prefs.sound === false) Snd.on = false;
+  try{qaLoadBackend();}catch(e){QA_BACKEND_CONFIG=QA_DEFAULT_CONFIG;QA_BACKEND_MODE='owner';notice('Lien de connexion Firebase invalide.','err');}
   initBackend();
   DB.onConn = refreshConn;
   refreshConn();
