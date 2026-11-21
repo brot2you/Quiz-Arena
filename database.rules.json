@@ -3,20 +3,26 @@
     "rooms": {
       "$pin": {
         ".read": "auth != null && $pin.matches(/^[0-9]{6}$/) && (!data.exists() || data.child('expiresAt').val() > now)",
-        ".write": "auth != null && $pin.matches(/^[0-9]{6}$/) && ((!data.exists() && newData.child('hostUid').val() === auth.uid) || (data.exists() && data.child('hostUid').val() === auth.uid))",
+        ".write": "auth != null && $pin.matches(/^[0-9]{6}$/) && ((!data.exists() && auth.token.firebase.sign_in_provider === 'google.com' && newData.child('hostUid').val() === auth.uid) || (data.exists() && data.child('hostUid').val() === auth.uid))",
         ".validate": "newData.hasChildren(['hostUid', 'expiresAt', 'status']) && ((data.exists() && newData.child('hostUid').val() === data.child('hostUid').val()) || (!data.exists() && newData.child('hostUid').val() === auth.uid)) && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() < now + 86400001",
         "players": {
           "$uid": {
             ".write": "auth != null && $uid === auth.uid && ((!data.exists() && newData.exists() && root.child('rooms').child($pin).exists() && root.child('rooms').child($pin).child('locked').val() !== true && root.child('rooms').child($pin).child('status').val() !== 'podium' && !root.child('rooms').child($pin).child('kicked').child(auth.uid).exists()) || (data.exists() && !newData.exists()))",
             ".validate": "newData.hasChildren(['name', 'score']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 20 && newData.child('score').isNumber() && (root.child('rooms').child($pin).child('hostUid').val() === auth.uid || (newData.child('score').val() === 0 && newData.child('streak').val() === 0 && newData.child('rank').val() === 0))",
             "name": {},
-            "av": { ".validate": "newData.isString() && newData.val().length <= 8" },
-            "members": { ".validate": "newData.isString() && newData.val().length <= 80" },
+            "av": {
+              ".validate": "newData.isString() && newData.val().length <= 8"
+            },
+            "members": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
             "score": {},
             "streak": {},
             "rank": {},
             "last": {},
-            "$other": { ".validate": false }
+            "$other": {
+              ".validate": false
+            }
           }
         }
       }
@@ -37,10 +43,14 @@
             ".write": "auth != null && $uid === auth.uid && !data.exists() && newData.exists() && root.child('rooms').child($pin).child('status').val() === 'question' && root.child('rooms').child($pin).child('qkey').val() === $qkey && root.child('rooms').child($pin).child('players').child($uid).exists() && now <= root.child('rooms').child($pin).child('phaseEnd').val() + 2000",
             ".validate": "newData.hasChildren(['c', 'at']) && newData.child('at').val() === now && (newData.child('c').isNumber() || (newData.child('c').isString() && newData.child('c').val().length <= 80) || newData.child('c').hasChildren())",
             "c": {
-              "$i": { ".validate": "(newData.isNumber() && newData.val() >= 0 && newData.val() < 10) || (newData.isString() && newData.val().length <= 8)" }
+              "$i": {
+                ".validate": "(newData.isNumber() && newData.val() >= 0 && newData.val() < 10) || (newData.isString() && newData.val().length <= 8)"
+              }
             },
             "at": {},
-            "$other": { ".validate": false }
+            "$other": {
+              ".validate": false
+            }
           }
         }
       }
